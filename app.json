@@ -3,6 +3,7 @@
     "name": "SmartWateringApp",
     "slug": "SmartWateringApp",
     "version": "1.0.0",
+    "entryPoint": "./app/(tabs)/index.tsx",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
