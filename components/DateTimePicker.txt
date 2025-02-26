@@ -1,0 +1,34 @@
+import React, { useState } from 'react';
+import { View, Button, Platform } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+const DatePicker = () => {
+    const [date, setDate] = useState(new Date());
+    const [show, setShow] = useState(false);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(Platform.OS === 'ios');
+        setDate(currentDate);
+    };
+
+    const showDatePicker = () => {
+        setShow(true);
+    };
+
+    return (
+        <View>
+            <Button onPress={showDatePicker} title="Show Date Picker" />
+            {show && (
+                <DateTimePicker
+                    value={date}
+                    mode="date"
+                    display="default"
+                    onChange={onChange}
+                />
+            )}
+        </View>
+    );
+};
+
+export default DatePicker;

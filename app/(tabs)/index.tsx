@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, ScrollView, View, Alert } from 'react-native';
+import { StyleSheet, ScrollView, View, Alert,  RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomText from '../../components/CustomText';
 import WeatherCard from '../../components/WeatherCard';
@@ -10,6 +10,8 @@ import Toast from 'react-native-toast-message';
 import { Card, Button } from 'react-native-elements';
 import { MaterialIcons } from '@expo/vector-icons';
 import TimeDisplay from '../../components/TimeDisplay';
+import ChartCard from '../../components/ChartCard';
+
 
 export default function Index() {
     const [autoWatering, setAutoWatering] = useState(false);
@@ -57,8 +59,19 @@ export default function Index() {
         handleAlert();
     }, [soilMoisture]);
 
+
+const [refreshing, setRefreshing] = useState(false);
+
+const onRefresh = () => {
+    setRefreshing(true);
+    loadSettings(); // Add any other data fetching methods here
+    setTimeout(() => setRefreshing(false), 1000);
+};
+
+
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={styles.header}>
                 <CustomText size={28} color="#2196F3" style={styles.welcomeText}>
                     Smart Watering System
@@ -68,7 +81,7 @@ export default function Index() {
 
             <WeatherCard />
             <KeyMetricsCard />
-           
+          
 
             <Settings 
               autoWatering={autoWatering} 
