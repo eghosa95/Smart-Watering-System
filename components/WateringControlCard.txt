@@ -1,0 +1,97 @@
+// WateringControlCard.js
+import React, { useState } from 'react';
+import { View, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { Card, Button, Switch } from 'react-native-elements';
+import CustomText from './CustomText';
+import Toast from 'react-native-toast-message';
+
+const WateringControlCard = ({ autoWatering, setAutoWatering, startWatering }) => {
+    const [loading, setLoading] = useState(false);
+
+    const handleManualWatering = () => {
+        Alert.alert(
+            'Manual Watering',
+            'Are you sure you want to manually water the plants?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Water Now',
+                    onPress: () => {
+                        setLoading(true);
+                        startWatering();
+                        setTimeout(() => {
+                            setLoading(false);
+                            Toast.show({
+                                type: 'success',
+                                text1: 'Watering Completed!',
+                                position: 'bottom',
+                            });
+                        }, 2000);
+                    },
+                },
+            ]
+        );
+    };
+
+    return (
+        <Card containerStyle={styles.card}>
+            <CustomText size={22} style={styles.title}>
+                Watering Control
+            </CustomText>
+            <Card.Divider />
+
+            <View style={styles.controlContainer}>
+                <CustomText size={18}>Automatic Watering</CustomText>
+                <Switch
+                    value={autoWatering}
+                    onValueChange={setAutoWatering}
+                    color="#2196F3"
+                />
+            </View>
+
+            <Button
+                title="Manual Watering"
+                onPress={handleManualWatering}
+                buttonStyle={styles.button}
+                disabled={loading}
+                icon={
+                    loading ? (
+                        <ActivityIndicator size="small" color="#FFF" />
+                    ) : (
+                        { name: 'water', type: 'material-community', color: '#FFF' }
+                    )
+                }
+            />
+        </Card>
+    );
+};
+
+const styles = StyleSheet.create({
+    card: {
+        borderRadius: 10,
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    controlContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    button: {
+        backgroundColor: '#42A5F5',
+        marginTop: 10,
+        borderRadius: 8,
+    },
+});
+
+export default WateringControlCard;

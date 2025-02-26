@@ -3,17 +3,13 @@ import { StyleSheet, ScrollView, View, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomText from '../../components/CustomText';
 import WeatherCard from '../../components/WeatherCard';
-
-
 import KeyMetricsCard from '../../components/KeyMetricsCard';
-
-
-import WateringCard from '../../components/WateringCard';
+/*import WateringControlCard from '../../components/WateringControlCard';*/
 import Settings from '../../components/Settings';
 import Toast from 'react-native-toast-message';
 import { Card, Button } from 'react-native-elements';
 import { MaterialIcons } from '@expo/vector-icons';
-
+import TimeDisplay from '../../components/TimeDisplay';
 
 export default function Index() {
     const [autoWatering, setAutoWatering] = useState(false);
@@ -63,66 +59,48 @@ export default function Index() {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <CustomText size={28} color="#2196F3" style={styles.welcomeText}>
-                Smart Watering System
-            </CustomText>
+            <View style={styles.header}>
+                <CustomText size={28} color="#2196F3" style={styles.welcomeText}>
+                    Smart Watering System
+                </CustomText>
+                
+            </View>
 
-           {/* Real-Time Weather Card */}
+            <WeatherCard />
+            <KeyMetricsCard />
            
-              <WeatherCard />
-           
-           {/* Real-Time Key Metrics */}
-           
 
-              <KeyMetricsCard />
+            <Settings 
+              autoWatering={autoWatering} 
+              setAutoWatering={setAutoWatering}
+              startWatering={handleStartWatering}
+             />
 
- 
-            
-                <WateringCard 
-               
-
-
-                soilMoisture={soilMoisture} 
-                startWatering={() => alert('Watering started!')} 
-                watering={false} 
-                autoWatering={autoWatering} 
-           
-                />
-
-
-
-<Card.Divider />
-
-            <Settings autoWatering={autoWatering} setAutoWatering={setAutoWatering} />
-            
-
-
-            {/* Watering History */}
 
             <Card containerStyle={styles.card}>
-    <View style={styles.cardHeader}>
-        <CustomText size={22} style={styles.cardTitle}>
-            Watering History
-        </CustomText>
-    </View>
+                <View style={styles.cardHeader}>
+                    <CustomText size={22} style={styles.cardTitle}>
+                        Watering History
+                    </CustomText>
+                </View>
+                <Card.Divider />
+                {wateringHistory.map((item) => (
+                    <View key={item.id} style={styles.historyItem}>
+                        <MaterialIcons name="history" size={30} color="#90A4AE" />
+                        <CustomText size={16} style={styles.historyText}>
+                            {item.date}: {item.action}
+                        </CustomText>
+                    </View>
+                ))}
+                <Button 
+                    title="Clear History" 
+                    onPress={() => setWateringHistory([])} 
+                    buttonStyle={styles.clearButton} 
+                />
+            </Card>
 
-  
-<Card.Divider />
 
-    {wateringHistory.map((item) => (
-        <View key={item.id} style={styles.historyItem}>
-            <MaterialIcons name="history" size={30} color="#90A4AE" />
-            <CustomText size={16} style={styles.historyText}>
-                {item.date}: {item.action}
-            </CustomText>
-        </View>
-    ))}
-    <Button 
-        title="Clear History" 
-        onPress={() => setWateringHistory([])} 
-        buttonStyle={styles.clearButton} 
-    />
-</Card>
+
 
 
             <Toast />
@@ -132,7 +110,8 @@ export default function Index() {
 
 const styles = StyleSheet.create({
     container: { flexGrow: 1, padding: 20, backgroundColor: '#F5F5F5' },
-    welcomeText: { fontWeight: 'bold', marginBottom: 20 },
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
+    welcomeText: { fontWeight: 'bold' },
     card: {
         borderRadius: 10,
         marginBottom: 20,
@@ -142,9 +121,8 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 3,
     },
-    weatherContainer: { flexDirection: 'row', alignItems: 'center' },
-    weatherText: { marginLeft: 10, fontWeight: 'bold' },
-    metricContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 5 },
+    cardHeader: { flexDirection: 'row', alignItems: 'center' },
+    cardTitle: { fontWeight: 'bold' },
     historyItem: { flexDirection: 'row', alignItems: 'center', marginVertical: 5 },
     historyText: { marginLeft: 10 },
     clearButton: { backgroundColor: '#EF5350', marginTop: 10 },
